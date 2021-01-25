@@ -1,0 +1,26 @@
+{
+    "$schema": "https://raw.githubusercontent.com/grafana/grafana/master/docs/sources/developers/plugins/plugin.schema.json",
+    "id": "grafana-todos-datasource",
+    "name": "TODOS",
+    "type": "datasource",
+    "metrics": true,
+    "dependencies": {
+        "grafanaDependency": ">7.0.0"
+    },
+    "info": {
+        "version": "%VERSION%",
+        "updated": "%TODAY%",
+        "description": "Grafana TODOS Datasource",
+        "author": {
+            "name": "Sriramajeyam",
+            "url": "https://github.com/yesoryeram"
+        },
+        "logos": {
+            "small": "img/logo.png",
+            "large": "img/logo.png"
+        },
+        "keywords": [
+            "plugin name"
+        ]
+    }
+}

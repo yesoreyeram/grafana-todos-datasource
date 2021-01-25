@@ -1,0 +1,24 @@
+{
+  "name": "grafana-todos-datasource",
+  "version": "1.0.0",
+  "description": "Grafana TODOS Datasource",
+  "main": "dist/module.js",
+  "scripts": {
+    "build": "grafana-toolkit plugin:build",
+    "sign": "grafana-toolkit plugin:sign",
+    "test": "grafana-toolkit plugin:test",
+    "dev": "grafana-toolkit plugin:dev",
+    "watch": "grafana-toolkit plugin:dev --watch"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@grafana/toolkit": "^7.3.7"
+  },
+  "dependencies": {
+    "@grafana/data": "^7.3.7",
+    "@grafana/runtime": "^7.3.7",
+    "@grafana/ui": "^7.3.7"
+  }
+}
