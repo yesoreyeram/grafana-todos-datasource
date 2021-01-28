@@ -35,8 +35,15 @@ export default class Datasource extends DataSourceApi<Query, DatasourceJSONOptio
     });
   }
   testDatasource(): Promise<any> {
-    return new Promise((resolve, reject) => {
-      resolve({ message: 'No checks performed', status: 'success' });
+    const promises: any[] = [];
+    Object.keys(this.pseudoDatasource).forEach(key => {
+      promises.push(this.pseudoDatasource[key as EntitiyType].testDatasource());
+    });
+    return Promise.all(promises).then(response => {
+      return {
+        message: response.map(r => r.message).join('; ') + '.',
+        status: response.every(r => r.status === 'success') ? 'success' : 'error',
+      };
     });
   }
 }

@@ -38,7 +38,10 @@ export class TodosDatasource extends DataSourceApi<Query, DatasourceJSONOptions>
   }
   testDatasource() {
     return new Promise(resolve => {
-      resolve({});
+      resolve({
+        message: 'Todos datasource working',
+        status: 'success',
+      });
     });
   }
 }

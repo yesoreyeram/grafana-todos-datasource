@@ -35,7 +35,10 @@ export class UsersDatasource extends DataSourceApi<Query, DatasourceJSONOptions>
   }
   testDatasource() {
     return new Promise(resolve => {
-      resolve({});
+      resolve({
+        message: 'User datasource working',
+        status: 'success',
+      });
     });
   }
 }
