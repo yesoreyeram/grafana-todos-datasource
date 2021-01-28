@@ -1,45 +1,41 @@
+import { flatten } from 'lodash';
 import {
-  DataFrame,
   DataQueryRequest,
   DataQueryResponse,
+  DataSourceInstanceSettings,
   DataSourceApi,
   LoadingState,
-  toDataFrame,
 } from '@grafana/data';
 import { Query, DatasourceJSONOptions, EntitiyType } from './types';
-import { users } from './data';
+import { UsersDatasource } from './users/UsersDatasource';
+import { TodosDatasource } from './todos/TodosDatasource';
 
-export class Datasource extends DataSourceApi<Query, DatasourceJSONOptions> {
-  constructor(instanceSettings: any) {
+export default class Datasource extends DataSourceApi<Query, DatasourceJSONOptions> {
+  usersDatasource: UsersDatasource;
+  todosDatasource: TodosDatasource;
+  constructor(instanceSettings: DataSourceInstanceSettings<DatasourceJSONOptions>) {
     super(instanceSettings);
-  }
-  private getTodos(): Promise<DataFrame> {
-    return new Promise((resolve, reject) => {
-      fetch('https://jsonplaceholder.typicode.com/todos')
-        .then(response => response.json())
-        .then(json => {
-          resolve(toDataFrame(json));
-        });
-    });
-  }
-  private getUsersList(): Promise<DataFrame> {
-    return new Promise((resolve, reject) => {
-      resolve(toDataFrame(users));
-    });
+    this.usersDatasource = new UsersDatasource(instanceSettings);
+    this.todosDatasource = new TodosDatasource(instanceSettings);
   }
   query(request: DataQueryRequest<Query>): Promise<DataQueryResponse> {
     const promises: any[] = [];
-    request.targets.forEach(target => {
-      if (target.entity === EntitiyType.Users) {
-        promises.push(this.getUsersList());
-      } else if (target.entity === EntitiyType.ToDos) {
-        promises.push(this.getTodos());
+    request.targets.forEach((target: Query) => {
+      switch (target.entity) {
+        case EntitiyType.Users:
+          promises.push(this.usersDatasource.query({ ...request, targets: [target] }));
+          break;
+        case EntitiyType.ToDos:
+          promises.push(this.todosDatasource.query({ ...request, targets: [target] }));
+          break;
+        default:
+          break;
       }
     });
     return Promise.all(promises).then(response => {
       return {
         state: LoadingState.Done,
-        data: response,
+        data: flatten(response.map(r => r.data)),
       };
     });
   }

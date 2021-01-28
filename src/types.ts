@@ -4,7 +4,7 @@ import {
   DataSourcePluginOptionsEditorProps,
   QueryEditorProps as QueryEditorProperties,
 } from '@grafana/data';
-import { Datasource } from './datasource';
+import Datasource from './datasource';
 
 export enum EntitiyType {
   Users = 'users',

@@ -14,11 +14,13 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@grafana/toolkit": "^7.3.7"
+    "@grafana/toolkit": "^7.3.7",
+    "@types/lodash": "^4.14.168"
   },
   "dependencies": {
     "@grafana/data": "^7.3.7",
     "@grafana/runtime": "^7.3.7",
-    "@grafana/ui": "^7.3.7"
+    "@grafana/ui": "^7.3.7",
+    "lodash": "^4.17.20"
   }
 }
