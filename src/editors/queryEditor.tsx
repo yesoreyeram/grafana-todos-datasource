@@ -1,6 +1,31 @@
 import React from 'react';
-import { QueryEditorProps } from './../types';
+import { Select } from '@grafana/ui';
+import { QueryEditorProps, EntitiyType } from './../types';
 
-export const QueryEditor: React.FC<QueryEditorProps> = () => {
-  return <>Query Editor</>;
+const Entities = [
+  { label: 'Todos', value: EntitiyType.ToDos },
+  { label: 'Users', value: EntitiyType.Users },
+];
+
+export const QueryEditor: React.FC<QueryEditorProps> = props => {
+  const { onChange, query } = props;
+  const onEntityChange = (value: EntitiyType) => {
+    query.entity = value;
+    onChange(query);
+  };
+  return (
+    <>
+      <div className="gf-form-inline">
+        <div className="gf-form">
+          <label className="gf-form-label query-keyword width-8">Entity</label>
+          <Select
+            className="width-12 min-width-12"
+            options={Entities}
+            value={Entities.find(e => e.value === query.entity)}
+            onChange={e => onEntityChange(e.value as EntitiyType)}
+          ></Select>
+        </div>
+      </div>
+    </>
+  );
 };

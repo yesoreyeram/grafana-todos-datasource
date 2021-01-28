@@ -6,12 +6,21 @@ import {
   LoadingState,
   toDataFrame,
 } from '@grafana/data';
-import { Query, DatasourceJSONOptions } from './types';
+import { Query, DatasourceJSONOptions, EntitiyType } from './types';
 import { users } from './data';
 
 export class Datasource extends DataSourceApi<Query, DatasourceJSONOptions> {
   constructor(instanceSettings: any) {
     super(instanceSettings);
+  }
+  private getTodos(): Promise<DataFrame> {
+    return new Promise((resolve, reject) => {
+      fetch('https://jsonplaceholder.typicode.com/todos')
+        .then(response => response.json())
+        .then(json => {
+          resolve(toDataFrame(json));
+        });
+    });
   }
   private getUsersList(): Promise<DataFrame> {
     return new Promise((resolve, reject) => {
@@ -20,8 +29,12 @@ export class Datasource extends DataSourceApi<Query, DatasourceJSONOptions> {
   }
   query(request: DataQueryRequest<Query>): Promise<DataQueryResponse> {
     const promises: any[] = [];
-    request.targets.forEach(() => {
-      promises.push(this.getUsersList());
+    request.targets.forEach(target => {
+      if (target.entity === EntitiyType.Users) {
+        promises.push(this.getUsersList());
+      } else if (target.entity === EntitiyType.ToDos) {
+        promises.push(this.getTodos());
+      }
     });
     return Promise.all(promises).then(response => {
       return {
