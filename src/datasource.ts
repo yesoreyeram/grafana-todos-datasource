@@ -8,7 +8,7 @@ import {
 } from '@grafana/data';
 import { DataSourceWithBackend } from '@grafana/runtime';
 import { Query, DatasourceJSONOptions, EntitiyType } from './types';
-import { UsersDatasource } from './users/UsersDatasource';
+import { TodosStaticDatasource } from './todos/TodosStaticDatasource';
 import { TodosDatasource } from './todos/TodosDatasource';
 
 export default class Datasource extends DataSourceApi<Query, DatasourceJSONOptions> {
@@ -16,8 +16,8 @@ export default class Datasource extends DataSourceApi<Query, DatasourceJSONOptio
   constructor(instanceSettings: DataSourceInstanceSettings<DatasourceJSONOptions>) {
     super(instanceSettings);
     const pseudoDatasource: any = {};
-    pseudoDatasource[EntitiyType.Users] = new UsersDatasource(instanceSettings);
     pseudoDatasource[EntitiyType.ToDos] = new TodosDatasource(instanceSettings);
+    pseudoDatasource[EntitiyType.ToDosStatic] = new TodosStaticDatasource(instanceSettings);
     this.pseudoDatasource = pseudoDatasource;
   }
   query(request: DataQueryRequest<Query>): Promise<DataQueryResponse> {

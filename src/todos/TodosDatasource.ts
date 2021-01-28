@@ -7,6 +7,7 @@ import {
   LoadingState,
   DataFrame,
 } from '@grafana/data';
+import { getBackendSrv } from '@grafana/runtime';
 import { EntitiyType, Query, DatasourceJSONOptions } from '../types';
 
 export class TodosDatasource extends DataSourceApi<Query, DatasourceJSONOptions> {
@@ -15,10 +16,13 @@ export class TodosDatasource extends DataSourceApi<Query, DatasourceJSONOptions>
   }
   getToDos(): Promise<DataFrame> {
     return new Promise((resolve, reject) => {
-      fetch('https://jsonplaceholder.typicode.com/todos')
-        .then(response => response.json())
-        .then(json => {
-          resolve(toDataFrame(json));
+      getBackendSrv()
+        .fetch({
+          url: 'https://jsonplaceholder.typicode.com/todos',
+        })
+        .toPromise()
+        .then(response => {
+          resolve(toDataFrame(response.data));
         });
     });
   }

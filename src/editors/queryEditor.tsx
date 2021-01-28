@@ -4,7 +4,7 @@ import { QueryEditorProps, EntitiyType } from './../types';
 
 const Entities = [
   { label: 'Todos', value: EntitiyType.ToDos },
-  { label: 'Users', value: EntitiyType.Users },
+  { label: 'Todos Static', value: EntitiyType.ToDosStatic },
 ];
 
 export const QueryEditor: React.FC<QueryEditorProps> = props => {

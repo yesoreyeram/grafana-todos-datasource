@@ -7,23 +7,30 @@ import {
   LoadingState,
   DataFrame,
 } from '@grafana/data';
-import { EntitiyType, Query, DatasourceJSONOptions } from './../types';
-import { users } from './data';
+import { EntitiyType, Query, DatasourceJSONOptions } from '../types';
+import { todos } from './data';
 
-export class UsersDatasource extends DataSourceApi<Query, DatasourceJSONOptions> {
+export class TodosStaticDatasource extends DataSourceApi<Query, DatasourceJSONOptions> {
   constructor(instanceSettings: DataSourceInstanceSettings<DatasourceJSONOptions>) {
     super(instanceSettings);
   }
-  getUsersList(): Promise<DataFrame> {
+  getToDos(): Promise<DataFrame> {
     return new Promise((resolve, reject) => {
-      resolve(toDataFrame(users));
+      resolve(
+        toDataFrame(
+          todos.map((todo: any) => {
+            todo.datasourcetype = 'Static';
+            return todo;
+          })
+        )
+      );
     });
   }
   query(request: DataQueryRequest<Query>): Promise<DataQueryResponse> {
     const promises: any[] = [];
     request.targets.forEach(target => {
-      if (target.entity === EntitiyType.Users) {
-        promises.push(this.getUsersList());
+      if (target.entity === EntitiyType.ToDosStatic) {
+        promises.push(this.getToDos());
       }
     });
     return Promise.all(promises).then(response => {
@@ -36,7 +43,7 @@ export class UsersDatasource extends DataSourceApi<Query, DatasourceJSONOptions>
   testDatasource() {
     return new Promise(resolve => {
       resolve({
-        message: 'User datasource working',
+        message: 'Todos datasource working',
         status: 'success',
       });
     });
