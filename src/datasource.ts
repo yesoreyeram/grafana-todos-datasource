@@ -1,6 +1,7 @@
 import { DataQueryRequest, DataQueryResponse, DataSourceApi, LoadingState } from '@grafana/data';
+import { DatasourceJSONOptions } from './types';
 
-export class Datasource extends DataSourceApi<any> {
+export class Datasource extends DataSourceApi<any, DatasourceJSONOptions> {
   constructor(instanceSettings: any) {
     super(instanceSettings);
   }
