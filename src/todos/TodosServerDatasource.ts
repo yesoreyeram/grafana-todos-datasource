@@ -10,15 +10,17 @@ import {
 import { getBackendSrv } from '@grafana/runtime';
 import { EntitiyType, Query, DatasourceJSONOptions } from '../types';
 
-export class TodosDatasource extends DataSourceApi<Query, DatasourceJSONOptions> {
+export class TodosServerDatasource extends DataSourceApi<Query, DatasourceJSONOptions> {
+  url: string;
   constructor(instanceSettings: DataSourceInstanceSettings<DatasourceJSONOptions>) {
     super(instanceSettings);
+    this.url = instanceSettings.url + '';
   }
   getToDos(): Promise<DataFrame> {
     return new Promise((resolve, reject) => {
       getBackendSrv()
         .fetch({
-          url: 'https://jsonplaceholder.typicode.com/todos',
+          url: `${this.url}/jsonplaceholder/todos`,
         })
         .toPromise()
         .then(response => {
@@ -29,7 +31,7 @@ export class TodosDatasource extends DataSourceApi<Query, DatasourceJSONOptions>
   query(request: DataQueryRequest<Query>): Promise<DataQueryResponse> {
     const promises: any[] = [];
     request.targets.forEach(target => {
-      if (target.entity === EntitiyType.ToDosClient) {
+      if (target.entity === EntitiyType.ToDosServer) {
         promises.push(this.getToDos());
       }
     });

@@ -3,8 +3,9 @@ import { Select } from '@grafana/ui';
 import { QueryEditorProps, EntitiyType } from './../types';
 
 const Entities = [
-  { label: 'Todos', value: EntitiyType.ToDos },
+  { label: 'Todos Client', value: EntitiyType.ToDosClient },
   { label: 'Todos Static', value: EntitiyType.ToDosStatic },
+  { label: 'Todos Server', value: EntitiyType.ToDosServer },
 ];
 
 export const QueryEditor: React.FC<QueryEditorProps> = props => {

@@ -7,8 +7,9 @@ import {
 import Datasource from './datasource';
 
 export enum EntitiyType {
-  ToDos = 'todos',
   ToDosStatic = 'todos-static',
+  ToDosClient = 'todos-client',
+  ToDosServer = 'todos-server',
 }
 
 export interface DatasourceJSONOptions extends DataSourceJsonData {}
