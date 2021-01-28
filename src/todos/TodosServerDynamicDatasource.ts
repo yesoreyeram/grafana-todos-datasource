@@ -8,17 +8,19 @@ import {
   DataFrame,
 } from '@grafana/data';
 import { getBackendSrv } from '@grafana/runtime';
-import { EntitiyType, Query, DatasourceJSONOptions } from '../types';
+import { EntitiyType, Query, DatasourceJSONOptions, JSONPlaceholderTypes } from '../types';
 
-export class TodosDatasource extends DataSourceApi<Query, DatasourceJSONOptions> {
+export class TodosServerDynamicDatasource extends DataSourceApi<Query, DatasourceJSONOptions> {
+  url: string;
   constructor(instanceSettings: DataSourceInstanceSettings<DatasourceJSONOptions>) {
     super(instanceSettings);
+    this.url = instanceSettings.url + '';
   }
-  getToDos(): Promise<DataFrame> {
+  getToDos(JSONPlaceholderType: JSONPlaceholderTypes): Promise<DataFrame> {
     return new Promise((resolve, reject) => {
       getBackendSrv()
         .fetch({
-          url: 'https://jsonplaceholder.typicode.com/todos',
+          url: `${this.url}/jsonplaceholder/${JSONPlaceholderType}`,
         })
         .toPromise()
         .then(response => {
@@ -29,8 +31,8 @@ export class TodosDatasource extends DataSourceApi<Query, DatasourceJSONOptions>
   query(request: DataQueryRequest<Query>): Promise<DataQueryResponse> {
     const promises: any[] = [];
     request.targets.forEach(target => {
-      if (target.entity === EntitiyType.ToDosClient) {
-        promises.push(this.getToDos());
+      if (target.entity === EntitiyType.ToDosServerDynamic) {
+        promises.push(this.getToDos(target.jsonplaceholdertype || JSONPlaceholderTypes.Todos));
       }
     });
     return Promise.all(promises).then(response => {
@@ -43,7 +45,7 @@ export class TodosDatasource extends DataSourceApi<Query, DatasourceJSONOptions>
   testDatasource() {
     return new Promise(resolve => {
       resolve({
-        message: 'Todos client datasource working',
+        message: 'Todos server dynamic datasource working',
         status: 'success',
       });
     });

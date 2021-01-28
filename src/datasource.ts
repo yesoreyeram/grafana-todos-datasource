@@ -11,6 +11,7 @@ import { Query, DatasourceJSONOptions, EntitiyType } from './types';
 import { TodosStaticDatasource } from './todos/TodosStaticDatasource';
 import { TodosDatasource } from './todos/TodosDatasource';
 import { TodosServerDatasource } from './todos/TodosServerDatasource';
+import { TodosServerDynamicDatasource } from './todos/TodosServerDynamicDatasource';
 
 export default class Datasource extends DataSourceApi<Query, DatasourceJSONOptions> {
   pseudoDatasource: Record<EntitiyType, DataSourceWithBackend>;
@@ -20,6 +21,7 @@ export default class Datasource extends DataSourceApi<Query, DatasourceJSONOptio
     pseudoDatasource[EntitiyType.ToDosClient] = new TodosDatasource(instanceSettings);
     pseudoDatasource[EntitiyType.ToDosStatic] = new TodosStaticDatasource(instanceSettings);
     pseudoDatasource[EntitiyType.ToDosServer] = new TodosServerDatasource(instanceSettings);
+    pseudoDatasource[EntitiyType.ToDosServerDynamic] = new TodosServerDynamicDatasource(instanceSettings);
     this.pseudoDatasource = pseudoDatasource;
   }
   query(request: DataQueryRequest<Query>): Promise<DataQueryResponse> {

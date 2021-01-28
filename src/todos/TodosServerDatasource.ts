@@ -45,7 +45,7 @@ export class TodosServerDatasource extends DataSourceApi<Query, DatasourceJSONOp
   testDatasource() {
     return new Promise(resolve => {
       resolve({
-        message: 'Todos datasource working',
+        message: 'Todos server datasource working',
         status: 'success',
       });
     });

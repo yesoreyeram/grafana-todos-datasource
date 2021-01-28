@@ -43,7 +43,7 @@ export class TodosStaticDatasource extends DataSourceApi<Query, DatasourceJSONOp
   testDatasource() {
     return new Promise(resolve => {
       resolve({
-        message: 'Todos datasource working',
+        message: 'Todos static datasource working',
         status: 'success',
       });
     });
