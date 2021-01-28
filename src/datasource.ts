@@ -6,30 +6,25 @@ import {
   DataSourceApi,
   LoadingState,
 } from '@grafana/data';
+import { DataSourceWithBackend } from '@grafana/runtime';
 import { Query, DatasourceJSONOptions, EntitiyType } from './types';
 import { UsersDatasource } from './users/UsersDatasource';
 import { TodosDatasource } from './todos/TodosDatasource';
 
 export default class Datasource extends DataSourceApi<Query, DatasourceJSONOptions> {
-  usersDatasource: UsersDatasource;
-  todosDatasource: TodosDatasource;
+  pseudoDatasource: Record<EntitiyType, DataSourceWithBackend>;
   constructor(instanceSettings: DataSourceInstanceSettings<DatasourceJSONOptions>) {
     super(instanceSettings);
-    this.usersDatasource = new UsersDatasource(instanceSettings);
-    this.todosDatasource = new TodosDatasource(instanceSettings);
+    const pseudoDatasource: any = {};
+    pseudoDatasource[EntitiyType.Users] = new UsersDatasource(instanceSettings);
+    pseudoDatasource[EntitiyType.ToDos] = new TodosDatasource(instanceSettings);
+    this.pseudoDatasource = pseudoDatasource;
   }
   query(request: DataQueryRequest<Query>): Promise<DataQueryResponse> {
     const promises: any[] = [];
     request.targets.forEach((target: Query) => {
-      switch (target.entity) {
-        case EntitiyType.Users:
-          promises.push(this.usersDatasource.query({ ...request, targets: [target] }));
-          break;
-        case EntitiyType.ToDos:
-          promises.push(this.todosDatasource.query({ ...request, targets: [target] }));
-          break;
-        default:
-          break;
+      if (this.pseudoDatasource[target.entity]) {
+        promises.push(this.pseudoDatasource[target.entity].query({ ...request, targets: [target] }));
       }
     });
     return Promise.all(promises).then(response => {
