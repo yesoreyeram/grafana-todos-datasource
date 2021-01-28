@@ -1,4 +1,4 @@
 import { DataSourcePlugin } from '@grafana/data';
-import { Datasource } from "./datasource";
+import { Datasource } from './datasource';
 
-export const plugin = new DataSourcePlugin(Datasource)
+export const plugin = new DataSourcePlugin(Datasource);
