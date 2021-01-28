@@ -1,16 +1,33 @@
-import { DataQueryRequest, DataQueryResponse, DataSourceApi, LoadingState } from '@grafana/data';
-import { DatasourceJSONOptions } from './types';
+import {
+  DataFrame,
+  DataQueryRequest,
+  DataQueryResponse,
+  DataSourceApi,
+  LoadingState,
+  toDataFrame,
+} from '@grafana/data';
+import { Query, DatasourceJSONOptions } from './types';
+import { users } from './data';
 
-export class Datasource extends DataSourceApi<any, DatasourceJSONOptions> {
+export class Datasource extends DataSourceApi<Query, DatasourceJSONOptions> {
   constructor(instanceSettings: any) {
     super(instanceSettings);
   }
-  query(request: DataQueryRequest): Promise<DataQueryResponse> {
+  private getUsersList(): Promise<DataFrame> {
     return new Promise((resolve, reject) => {
-      resolve({
+      resolve(toDataFrame(users));
+    });
+  }
+  query(request: DataQueryRequest<Query>): Promise<DataQueryResponse> {
+    const promises: any[] = [];
+    request.targets.forEach(() => {
+      promises.push(this.getUsersList());
+    });
+    return Promise.all(promises).then(response => {
+      return {
         state: LoadingState.Done,
-        data: [],
-      });
+        data: response,
+      };
     });
   }
   testDatasource(): Promise<any> {
